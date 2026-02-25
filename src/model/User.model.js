@@ -24,18 +24,26 @@ const userSchema=new mongoose.Schema(
       type:String,
       required:true,
       select:true,
+      resetPasswordToken: String,
+      resetPasswordExpire: Date,
 
    },
    gender:{
       type:String,
-      validate(value){
-      if(!["male", "female","other"].includes(value))
-      {
-            throw new error("Gender Invalid");
-      }
-   }
-   }
-},
+        enum: {// enum is typically use for the restricted values or selected values!
+          values:["male","female","other"],
+          message:`{values} is invalid gender!`
+        },
+
+        //OR
+      // validate(value){
+      // if(!["male", "female","other"].includes(value))
+      // {
+            // throw new error("Gender Invalid");
+      // }}
+
+       }
+   },
 // time stamps added after the user schema {} culybraces, and it show the date and time created at defaultly..
    {
       timestamps:true,
@@ -64,6 +72,6 @@ userSchema.methods.validatePassword=async function(passwordInputByUser){
 };
  
 //Schema Model 
-const User=mongoose.model("User",userSchema);
+const User=new mongoose.model("User",userSchema);
 module.exports=User;
 

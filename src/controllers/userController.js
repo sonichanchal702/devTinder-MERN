@@ -3,6 +3,7 @@ const jwt=require("jsonwebtoken");
 
 const User = require("../model/User.model");
 const {validateSignupData}= require("../utils/validations");
+const authRouter = require("../routers/authRouter");
 
 
 // SIGN-UP
@@ -77,5 +78,16 @@ exports.login=async(req,res)=>{
   }catch(err){
     res.status(500).json({Error:err.message});
   }
+
+};
+
+//Logout api
+
+exports.logout=async(req,res)=>{
+
+    res.cookie("token", null, {
+      expires:new Date(Date.now()),
+    });
+    res.send("Logout Successfully!");
 
 };
