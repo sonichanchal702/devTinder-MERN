@@ -1,0 +1,6 @@
+@tailwinds base;
+@tailwinds components;
+@tailwinds utilities;
+
+@plugin "daisyui";
+
