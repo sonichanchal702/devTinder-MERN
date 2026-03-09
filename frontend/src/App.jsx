@@ -9,9 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Body />}>
 
-          <Route index element={<Feed />} />        {/* 👈 shows at "/" */}
-
-          <Route index element={<Login />} />        {/* 👈 shows at "/" */}
+          <Route index element={<Feed />} />       
           <Route path="/login" element={<Login />} />
           <Route path="/feed"  element={<Feed />} />
 

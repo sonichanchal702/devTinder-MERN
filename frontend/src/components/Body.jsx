@@ -4,7 +4,7 @@ import Footer from "./Footer";
 
 const Body= () => {
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex-col overflow-x-hidden w-full">
             <Navbar />
 
             <main className="flex-grow">
