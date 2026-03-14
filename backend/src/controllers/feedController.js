@@ -1,34 +1,45 @@
-const User= require("../model/User.model");
-const connectionRequestModel=require("../model/ConnectionRequest.model");
-const getFeed=async(req,res)=>{
-    try{
-         const loggedInUserId=req.userId;
-         let { page, limit}=req.query;
-         page=parseInt(page) ||1;
-         limit=parseInt(limit) ||10;
-         const skip=(page-1)*limit;
-         // get the connection request of the logged in user where status is accepted or interested and get the toUserId from that connection request and then get the user details of that toUserId and then send the response to the user
+const ConnectionRequest = require("../model/ConnectionRequest.model");
+const User = require("../model/User.model");
 
-         const connectionRequests=await connectionRequestModel.find({
-            $or:[
-                {fromUserId:loggedInUserId._id},
-                {toUserId:loggedInUserId._id}
-            ]
+const getFeed = async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+
+    // Pagination
+    let { page, limit } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Ye log hide karo
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [
+        { fromUserId: loggedInUser._id },
+        { toUserId: loggedInUser._id }
+      ]
     }).select("fromUserId toUserId");
 
-    const hideUsers=new Set();
-    hideUsers.add((loggedInUserId._id).toString());
-    const feed=await User.find({
-        _id: { $nin:Array.from(hideUsers)}
+    const hideUsers = new Set();
+    hideUsers.add(loggedInUser._id.toString());
+
+    connectionRequests.forEach((req) => {
+      hideUsers.add(req.fromUserId.toString());
+      hideUsers.add(req.toUserId.toString());
+    });
+
+    // Baaki users dikhao
+    const feed = await User.find({
+      _id: { $nin: Array.from(hideUsers) }
     })
-    .select("Name, Gender")
+    .select("firstName lastName age gender bio photoUrl skills")
     .skip(skip)
     .limit(limit);
 
-    res.json({message:"Feed fetched successfully", data:feed});
-    }catch(err){
-        res.status(500).json({message:"Internal server error", error:err.message});
-    }
+    res.json({ message: "Feed fetched!", data: feed });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports={getFeed};
+module.exports = { getFeed };

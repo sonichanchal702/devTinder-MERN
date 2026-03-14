@@ -17,8 +17,10 @@ app.use(cookieParser());
 const authRouter=require("./routers/authRouter.js");
 const profileRouter=require("./routers/profileRouter.js");
 const reqRouter=require("./routers/reqRouter.js");
+const userRouter = require("./routers/user");
 
-// using or mounting Routers
+
+// using or mounting Routers-CORS is used to allow cross-origin requests from the frontend (which is running on a different port) and to allow cookies to be sent with those requests.
 app.use(cors({
   origin: "http://localhost:5173", // frontend ka address
   credentials: true,               // cookies allow karo
@@ -27,7 +29,7 @@ app.use(cors({
 app.use("/users", authRouter);
 app.use("/users", profileRouter);
 app.use("/users", reqRouter);
-
+app.use("/users", userRouter);
 
 // Health check (optional but common)
 app.get("/", (req, res) => {

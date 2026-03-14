@@ -35,17 +35,32 @@ const userSchema=new mongoose.Schema(
           message:`{values} is invalid gender!`
         },
 
-        //OR
-      // validate(value){
-      // if(!["male", "female","other"].includes(value))
-      // {
-            // throw new error("Gender Invalid");
-      // }}
+         photoUrl: {
+          type: String,
+          default: "https://randomuser.me/api/portraits/lego/1.jpg", // ← default photo!
+        },
 
-       }
-   },
-// time stamps added after the user schema {} culybraces, and it show the date and time created at defaultly..
-   {
+
+        bio: {
+          type: String,
+          default: "Hey there! I am using DevTinder 👋",
+        },
+
+        
+        skills: {
+          type: [String], // array of strings
+        },
+              //OR
+            // validate(value){
+            // if(!["male", "female","other"].includes(value))
+            // {
+                  // throw new error("Gender Invalid");
+            // }}
+     
+             }
+         },
+      // time stamps added after the user schema {} culybraces, and it show the date and time created at defaultly..
+         {
       timestamps:true,
    }
 

@@ -1,24 +1,26 @@
+const ConnectionRequest = require("../model/ConnectionRequest.model");
 
-const ConnectionRequest = require("../models/ConnectionRequest");
-const User = require("../model/User.model");
+const getPendingConnectionRequest = async (req, res) => {
+  try {
+    const loggedInUser = req.user; // ✅ full user object!
 
-const getPendingConnectionRequest = async(req, res) => {
-    try {
-        const loggedInUser = req.userId;// Assuming user is attached to the request object by authentication middleware
-        const user = await User.findById(loggedInUser);
-        const USER_SAFE_DATA = "name gender"; // fields to be populated from the User model
-        const connectionRequests = await ConnectionRequest.find({
-             $or:[
-               {toUserId: loggedInUser._id, status: "accepted"}, 
-               {fromUserId: loggedInUser._id, status: "accepted"},
-             ],
-             }).populate("fromUserId",USER_SAFE_DATA)// populate the fromUserId field with the name, email, and profilePicture fields of the User model
+    const USER_SAFE_DATA = "firstName lastName photoUrl age gender bio"; // ✅
 
-             const data=connectionRequests.map((row)=> row.fromUserId);
+    const connectionRequests = await ConnectionRequest.find({
+      toUserId: loggedInUser._id, // ✅ sirf received requests!
+      status: "interested",       // ✅ sirf pending!
+    }).populate("fromUserId", USER_SAFE_DATA);
 
-            res.json({data: data, message: "Pending connection requests fetched successfully"});
-    }catch (err) {
-        res.status(400).send("Error fetching user profile: " + err.message);
-    }
+    const data = connectionRequests.map((row) => row.fromUserId);
+
+    res.json({ 
+      data: data, 
+      message: "Pending connection requests fetched successfully" 
+    });
+
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
-module.exports = { getPendingConnectionRequest };// function is send into {} curly braces
+
+module.exports = { getPendingConnectionRequest };
