@@ -1,45 +1,56 @@
-// app.js work:- Only boot the application and connect the db plus nevigate to the middleware for the api fetching
-
 const express = require("express");
-const cookieParser=require("cookie-parser");
+const http = require("http");  // ← add karo
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/database");
 const cors = require("cors");
-
+const { Server } = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
+
+// CORS — sabse pehle
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 
 // Global middleware
 app.use(express.json());
 app.use(cookieParser());
 
-
-// require Routers
-const authRouter=require("./routers/authRouter.js");
-const profileRouter=require("./routers/profileRouter.js");
-const reqRouter=require("./routers/reqRouter.js");
+// Routers
+const authRouter = require("./routers/authRouter.js");
+const profileRouter = require("./routers/profileRouter.js");
+const reqRouter = require("./routers/reqRouter.js");
 const userRouter = require("./routers/user");
-
-
-// using or mounting Routers-CORS is used to allow cross-origin requests from the frontend (which is running on a different port) and to allow cookies to be sent with those requests.
-app.use(cors({
-  origin: "http://localhost:5173", // frontend ka address
-  credentials: true,               // cookies allow karo
-}));
 
 app.use("/users", authRouter);
 app.use("/users", profileRouter);
 app.use("/users", reqRouter);
 app.use("/users", userRouter);
 
-// Health check (optional but common)
 app.get("/", (req, res) => {
   res.send("API running");
 });
 
-// DB + Server
-connectDB().then(() => {
-  app.listen(8080, () => {
-    console.log("Server running on port 8080");
+// Socket
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
 });
 
+// DB + Server
+connectDB().then(() => {
+  server.listen(8080, () => {  // ← server.listen karo app.listen nahi!
+    console.log("Server running on port 8080");
+  });
+});

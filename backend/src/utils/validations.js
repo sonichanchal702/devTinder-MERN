@@ -1,9 +1,9 @@
 const validator=require("validator");
 const validateSignupData=(req)=>{
-    const {name, email, password}=req.body;
-    if(!name)
+    const {firstName, lastName, email, password}=req.body;
+    if(!firstName || !lastName)
     {
-        throw new Error("Name should be Valid");
+        throw new Error("First Name and Last Name should be Valid");
 
     }else if(!validator.isEmail(email))
     {
@@ -15,8 +15,16 @@ const validateSignupData=(req)=>{
     }
 };
 
-const validateEditProfileData=(req)=>{
-    const allowedEditFields=["name, email, password, gender"]; // allowed editing to the given elements in arr
+const validateEditProfileData = (req) => {
+  const allowedEditFields = [
+    "firstName",
+    "lastName", 
+    "age",
+    "about",
+    "photoUrl",
+    "skills",
+    "gender",
+  ];
 
     const isAllowedEdit= Object.keys(req.body).every(feild=>
     allowedEditFields.includes(feild)

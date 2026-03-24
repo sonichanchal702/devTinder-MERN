@@ -5,7 +5,7 @@ const { profileView, profileEdit, forgotPassword, resetPassword} = require("../c
 const userAuth = require("../middleware/auth.middleware");
 
 
-profileRouter.get("profile/view", userAuth, profileView);
+profileRouter.get("/profile/view", userAuth, profileView);
 profileRouter.patch("/profile/edit", userAuth, profileEdit);
 profileRouter.patch("/profile/editPassword", userAuth, resetPassword);
 

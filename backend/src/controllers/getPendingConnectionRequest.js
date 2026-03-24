@@ -4,14 +4,18 @@ const getPendingConnectionRequest = async (req, res) => {
   try {
     const loggedInUser = req.user; // ✅ full user object!
 
-    const USER_SAFE_DATA = "firstName lastName photoUrl age gender bio"; // ✅
+    const USER_SAFE_DATA = "firstName lastName photoUrl age gender about"; 
 
     const connectionRequests = await ConnectionRequest.find({
-      toUserId: loggedInUser._id, // ✅ sirf received requests!
-      status: "interested",       // ✅ sirf pending!
-    }).populate("fromUserId", USER_SAFE_DATA);
+      toUserId: loggedInUser._id,
+      status: "interested",
+      }).populate("fromUserId", "firstName lastName photoUrl age gender about");
 
-    const data = connectionRequests.map((row) => row.fromUserId);
+      const data = connectionRequests.map((row) => ({
+        ...row.fromUserId.toObject(),  // user data
+        requestId: row._id,            // request ka _id
+      }));
+
 
     res.json({ 
       data: data, 

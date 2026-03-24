@@ -17,26 +17,25 @@ const profileView= async(req ,res)=>
 };
 
 //Edit UserProfile  or Update
-const profileEdit= async(req,res)=>{
-   try{
-      if(!validateEditProfileData(req)){//--------> call the Utils-> validateEditProfileData()
-         throw new Error("Invalid Edit Request!");
-      }
-      const loggedInUser= req.user;
+const profileEdit = async (req, res) => {
+  try {
+    if (!validateEditProfileData(req)) {
+      throw new Error("Invalid Edit Request!");
+    }
+    const loggedInUser = req.user;
 
-      Object.keys(req.body).forEach((key)=> (loggedInUser[key]=req.body[key]));
-      console.log(loggedInUser);
+    Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
 
-      await loggedInUser.save();
+    await loggedInUser.save();
 
-      res.send(`${loggedInUser.name},Profile Update or Edit SuccessFully!!`);
-
-   }catch(error)
-   {
-      res.status(400).send("Error: "+ error.message);
-   }
+    res.json({ // ← res.send ki jagah res.json use karo
+      message: `${loggedInUser.firstName} Profile Updated Successfully!`,
+      data: loggedInUser,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
-
 
 // forgot password API - update pwd
 const forgotPassword = async (req, res) => {

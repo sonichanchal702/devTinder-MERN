@@ -1,92 +1,89 @@
-const mongoose=require("mongoose");
-const bcrypt=require("bcrypt");
-const jwt=require("jsonwebtoken");
-const validator=require("validator");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const validator = require("validator");
 
-
-const userSchema=new mongoose.Schema(
-{
-   name:{
-      type:String,
-      required:true,
-      minLength:4,
-      maxLength:30
-
-   }, 
-   email:{
-      type:String,
-      required:true,
-      unique:true,
-      lowercase:true,
-      trim:true
-   },
-   password:{
-      type:String,
-      required:true,
-      select:true,
-      resetPasswordToken: String,
-      resetPasswordExpire: Date,
-
-   },
-   gender:{
-      type:String,
-        enum: {// enum is typically use for the restricted values or selected values!
-          values:["male","female","other"],
-          message:`{values} is invalid gender!`
-        },
-
-         photoUrl: {
-          type: String,
-          default: "https://randomuser.me/api/portraits/lego/1.jpg", // ← default photo!
-        },
-
-
-        bio: {
-          type: String,
-          default: "Hey there! I am using DevTinder 👋",
-        },
-
-        
-        skills: {
-          type: [String], // array of strings
-        },
-              //OR
-            // validate(value){
-            // if(!["male", "female","other"].includes(value))
-            // {
-                  // throw new error("Gender Invalid");
-            // }}
-     
-             }
-         },
-      // time stamps added after the user schema {} culybraces, and it show the date and time created at defaultly..
-         {
-      timestamps:true,
-   }
-
+const userSchema = new mongoose.Schema(
+  {
+   firstName: {
+      type: String,
+      required: true,
+      minLength: 3,
+      maxLength: 30,
+    },
+    lastName: {
+      type: String,
+      minLength: 3,
+      maxLength: 30,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    resetPasswordToken: String,      // ← bahar nikalo
+    resetPasswordExpire: Date,       // ← bahar nikalo
+    age: {
+      type: Number,
+      min: 18,
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ["male", "female", "other"],
+        message: `{VALUE} is not a valid gender type`,
+      },
+    },
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+    membershipType: {
+      type: String,
+    },
+    photoUrl: {
+      type: String,
+      default: "https://geographyandyou.com/images/user-profile.png",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid Photo URL: " + value);
+        }
+      },
+    },
+    about: {
+      type: String,
+      default: "This is a default about of the user!",
+    },
+    skills: {
+      type: [String],
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-
-/* custom changes mannuly in middleware JWT built-in methods :-
- 1.getJWT() and 2.validatePassword() from bcrypt and JWT */
-userSchema.methods.getJWT=async function(){
-   const user=this;
-   const token=await jwt.sign({_id:user_id},
-   SECRET_KEY,
-   {
-      expiresIn:"7d",
-   });
+userSchema.methods.getJWT = async function () {
+  const user = this;
+  const token = await jwt.sign({ _id: user._id }, "DEV@Tinder$790", {
+    expiresIn: "7d",
+  });
+  return token;
 };
 
-userSchema.methods.validatePassword=async function(passwordInputByUser){
-   const user=this;
-   const passwordHash=user.password;
-   const isPasswordValid= await bcrypt.compare(passwordInputByUser,passwordHash);
-
-   return isPasswordValid;
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const user = this;
+  const isPasswordValid = await bcrypt.compare(
+    passwordInputByUser,
+    user.password
+  );
+  return isPasswordValid;
 };
- 
-//Schema Model 
-const User=new mongoose.model("User",userSchema);
-module.exports=User;
 
+module.exports = mongoose.model("User", userSchema);
