@@ -41,12 +41,40 @@ app.get("/", (req, res) => {
 });
 
 // Socket
-io.on("connection", (socket) => {
+  io.on("connection", (socket) => {
+  socket.on("joinChat", ({ userId, targetUserId, firstName }) => {
+    const roomId = [userId, targetUserId].sort().join("_");
+    socket.join(roomId);
+  });
+
+  socket.on("sendMessage", async ({ userId, targetUserId, firstName, lastName, text }) => {
+    const roomId = [userId, targetUserId].sort().join("_");
+    
+    // DB mein save karo
+    const Chat = require("./model/Chat");
+    let chat = await Chat.findOne({
+      participants: { $all: [userId, targetUserId] },
+    });
+    
+    if (!chat) {
+      chat = new Chat({
+        participants: [userId, targetUserId],
+        messages: [],
+      });
+    }
+    
+    chat.messages.push({ senderId: userId, text });
+    await chat.save();
+
+    io.to(roomId).emit("messageReceived", { firstName, lastName, text });
+  });
   console.log("User connected:", socket.id);
+  
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
 });
+
 
 // DB + Server
 connectDB().then(() => {
