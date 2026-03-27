@@ -33,3 +33,8 @@
 4. bio → about field name fix
 5. Missing export default in components
 6. firstName/lastName schema fix
+
+- add chat, fix connections, requests, profile edit and socket.io setup
+
+# payment.js /primium.jsx 
+Payment gateway integrate kiya tha Razorpay se, mock mode mein hai — production mein real keys lagani hain!

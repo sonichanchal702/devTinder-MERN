@@ -6,7 +6,11 @@ const {getPendingConnectionRequest}=require("../controllers/getPendingConnection
 const { getFeed } = require("../controllers/feedController");
 const { getConnections } = require("../controllers/getConnections");
 const { getChat } = require("../controllers/getChat");
+const { createOrder, verifyPayment } = require("../controllers/payment");
 
+userRouter.get("/premium/verify", userAuth, async (req, res) => {
+  res.json({ isPremium: req.user.isPremium || false });
+});
 userRouter.get("/chat/:targetUserId", userAuth, getChat);
 userRouter.get("/connections", userAuth, getConnections);
 userRouter.get("/profile",userAuth,getProfile);
