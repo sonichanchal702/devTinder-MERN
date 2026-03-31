@@ -10,18 +10,20 @@ const Feed = () => {
   const dispatch = useDispatch();
 
   const getFeed = async () => {
-    if (feed) return; // ← theek hai
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(BASE_URL + "/feed", {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-      dispatch(addFeed(res?.data?.data));
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // ❌ Pehle — feed hai toh skip
+  if (feed) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.get(BASE_URL + "/feed", {
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
+    });
+    dispatch(addFeed(res?.data?.data));
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   useEffect(() => {
     getFeed();

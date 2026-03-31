@@ -4,6 +4,8 @@ const User = require("../model/User.model");
 const getFeed = async (req, res) => {
   try {
     const loggedInUser = req.user;
+     console.log("Logged in user ID:", loggedInUser._id); // ← add karo
+    console.log("Logged in user name:", loggedInUser.firstName); // ← add karo
 
     // Pagination
     let { page, limit } = req.query;

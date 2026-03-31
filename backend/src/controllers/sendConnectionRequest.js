@@ -1,4 +1,7 @@
 // ✅ Poora fixed sendConnectionRequest.js:
+const User = require("../model/User.model.js");
+const ConnectionRequestModel = require("../model/ConnectionRequest.model.js");
+
 const sendConnectionRequest = async (req, res) => {
   try {
     const fromUserId = req.user._id; // ← fix
