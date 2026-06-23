@@ -79,6 +79,7 @@ app.get("/", (req, res) => {
 
 
 // DB + Server
+
 connectDB().then(() => {
   server.listen(8080, () => {  // ← server.listen karo app.listen nahi!
     console.log("Server running on port 8080");

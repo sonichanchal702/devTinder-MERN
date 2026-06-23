@@ -230,7 +230,7 @@ const EditProfile = ({ user }) => {
         {/* Preview */}
         <div>
           <p className="preview-label">Live Preview</p>
-          <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} />
+         <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} isPreview={true} />
         </div>
       </div>
     </>

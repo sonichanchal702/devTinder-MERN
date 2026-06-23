@@ -27,7 +27,7 @@ const Login = () => {
     );
     localStorage.setItem("token", res.data.token);
     dispatch(addUser(res.data));
-    navigate("/");
+    navigate("/feed");
   } catch (err) {
     setError(err?.response?.data?.message || "Something went wrong");
   }
@@ -228,8 +228,9 @@ const Login = () => {
 
         <div className="login-card">
           <div className="login-brand">
-            <h1 className="login-brand-name">👩‍💻 DevTinder</h1>
-            <p className="login-tagline">Connect with developers worldwide</p>
+            <h1 className="login-brand-name"> 🔥 Vibe</h1>
+            <p className="login-tagline">Where your people find you</p>
+          
           </div>
 
           <div className="divider" />

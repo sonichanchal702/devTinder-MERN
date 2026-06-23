@@ -4,16 +4,12 @@ const User = require("../model/User.model");
 const getFeed = async (req, res) => {
   try {
     const loggedInUser = req.user;
-     console.log("Logged in user ID:", loggedInUser._id); // ← add karo
-    console.log("Logged in user name:", loggedInUser.firstName); // ← add karo
 
-    // Pagination
     let { page, limit } = req.query;
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Ye log hide karo
     const connectionRequests = await ConnectionRequest.find({
       $or: [
         { fromUserId: loggedInUser._id },
@@ -29,11 +25,11 @@ const getFeed = async (req, res) => {
       hideUsers.add(req.toUserId.toString());
     });
 
-    // Baaki users dikhao
+    // ← explicit _id added to select
     const feed = await User.find({
       _id: { $nin: Array.from(hideUsers) }
     })
-    .select("firstName lastName age gender about photoUrl skills")
+    .select("_id firstName lastName age gender about photoUrl skills")
     .skip(skip)
     .limit(limit);
 

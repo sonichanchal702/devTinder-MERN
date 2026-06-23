@@ -1,4 +1,3 @@
-
 import { addConnections } from "../utils/slices/connectionSlice";
 import { addRequests } from "../utils/slices/requestSlice";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -6,7 +5,7 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 import axios from "axios";
 import { BASE_URL } from "../utils/slices/constants";
-import { useDispatch, useSelector } from "react-redux"; 
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/slices/userSlice";
 import { useEffect } from "react";
 
@@ -15,7 +14,6 @@ const Body = () => {
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
 
-  // ← user change hone pe sab clear karo
   useEffect(() => {
     if (!userData) {
       dispatch(addConnections(null));
@@ -32,10 +30,9 @@ const Body = () => {
         withCredentials: true,
       });
       dispatch(addUser(res.data));
-      console.log("Profile response:", res.data);
     } catch (err) {
       if (err.response?.status === 401) {
-        navigate("/login");
+        navigate("/");   // ← was "/login", now goes to Landing
       }
     }
   };

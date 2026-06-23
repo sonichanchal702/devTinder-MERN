@@ -38,3 +38,49 @@
 
 # payment.js /primium.jsx 
 Payment gateway integrate kiya tha Razorpay se, mock mode mein hai — production mein real keys lagani hain!
+
+# Date : 23/06/2026 changes made in UI
+
+### 🎨 Complete UI Overhaul
+- Rebuilt entire frontend with dark glassmorphism design system
+- Consistent design language across all pages (purple/blue gradients, blur effects)
+- Custom fonts: Syne (headings) + DM Sans (body) throughout
+- Smooth hover animations and micro-interactions on all interactive elements
+
+### 🏠 Public Landing Page (NEW)
+- Brand new `/` landing page — no login required
+- Animated rotating word hero (Developers → Athletes → Creators → Founders → Hustlers)
+- Features section, How it Works steps, stats strip, final CTA
+- Completely separate from app shell — no Navbar/Footer on landing
+
+### 🔀 Route Architecture Refactor
+- Landing `/` and Login `/login` moved outside Body wrapper (no auth check)
+- Feed moved from `/` to `/feed` — clean separation of public vs protected routes
+- Unauthenticated users hitting protected routes redirect to `/` landing page
+- Logout redirects to landing page instead of login
+
+### 🃏 UserCard Upgrade
+- Full glassmorphism card with gradient photo overlay
+- Name + age/gender overlaid on photo
+- Smooth image zoom on hover
+- `isPreview` prop — disables buttons in EditProfile live preview
+- Fallback avatar using DiceBear if no photo URL
+
+### 🐛 Bug Fixes
+- Fixed `POST /connectionReq/send/interested/undefined` 500 error
+  — Backend now explicitly selects `_id` in feed query
+- Fixed own profile showing in feed (frontend filter + backend already excluded)
+- Fixed stale feed persisting after user switch — feed cleared on logout
+- Fixed NavBar JSX tag mismatch causing Vite build failure
+- Fixed `/login` route inside Body causing 401 spam on landing page
+
+### 📬 Requests Page Upgrade  
+- New dark glassmorphism list UI
+- Animated card entrance, hover slide effect
+- Pending count badge
+- Empty state with icon
+
+### ⚙️ Code Quality
+- Logout now uses `finally` block — always clears Redux + localStorage
+- Feed dispatch cleared on logout via `addFeed(null)`
+- Added `framer-motion` for landing page animations
