@@ -29,7 +29,7 @@ const getFeed = async (req, res) => {
     const feed = await User.find({
       _id: { $nin: Array.from(hideUsers) }
     })
-    .select("_id firstName lastName age gender about photoUrl skills")
+    .select("_id firstName lastName age gender about photoUrl skills userType socialLinks")
     .skip(skip)
     .limit(limit);
 

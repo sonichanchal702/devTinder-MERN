@@ -5,7 +5,7 @@ const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
-   firstName: {
+    firstName: {
       type: String,
       required: true,
       minLength: 3,
@@ -27,8 +27,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    resetPasswordToken: String,      // ← bahar nikalo
-    resetPasswordExpire: Date,       // ← bahar nikalo
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
     age: {
       type: Number,
       min: 18,
@@ -62,6 +62,17 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: [String],
+    },
+    // ── NEW FIELDS ──
+    userType: {
+      type: String,
+      enum: ["Developer", "Athlete", "Creator", "Celebrity", "Other"],
+      default: "Developer",
+    },
+    socialLinks: {
+      github: { type: String, default: "" },
+      linkedin: { type: String, default: "" },
+      twitter: { type: String, default: "" },
     },
   },
   {

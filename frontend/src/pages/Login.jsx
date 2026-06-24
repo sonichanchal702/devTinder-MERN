@@ -5,6 +5,7 @@ import { addUser } from "../utils/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/slices/constants";
 
+
 const Login = () => {
   const [email, setEmailId] = useState("sunder@gmail.com");
   const [password, setPassword] = useState("Sunder@123");
@@ -12,6 +13,7 @@ const Login = () => {
   const [lastName, setLastName] = useState("");
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [error, setError] = useState("");
+  const [userType, setUserType] = useState("Developer");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -32,20 +34,20 @@ const Login = () => {
     setError(err?.response?.data?.message || "Something went wrong");
   }
 };
-
-  const handleSignUp = async () => {
-    try {
-      const res = await axios.post(
-        BASE_URL + "/signup",
-        { firstName, lastName, email, password },
-        { withCredentials: true }
-      );
-      dispatch(addUser(res.data.data));
-      return navigate("/profile");
-    } catch (err) {
-      setError(err?.response?.data?.message || "Something went wrong");
-    }
-  };
+  // UPDATE handleSignUp to include userType:
+const handleSignUp = async () => {
+  try {
+    const res = await axios.post(
+      BASE_URL + "/signup",
+      { firstName, lastName, email, password, userType },  // ← added userType
+      { withCredentials: true }
+    );
+    dispatch(addUser(res.data.data));
+    return navigate("/profile");
+  } catch (err) {
+    setError(err?.response?.data?.message || "Something went wrong");
+  }
+};
 
   return (
     <>
@@ -237,31 +239,77 @@ const Login = () => {
 
           <h2 className="login-title">{isLoginForm ? "Welcome back" : "Create account"}</h2>
 
-          {!isLoginForm && (
-            <>
-              <div className="input-group">
-                <label className="input-label">First Name</label>
-                <input
-                  type="text"
-                  value={firstName}
-                  className="login-input"
-                  placeholder="John"
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-              <div className="input-group">
-                <label className="input-label">Last Name</label>
-                <input
-                  type="text"
-                  value={lastName}
-                  className="login-input"
-                  placeholder="Doe"
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
-            </>
-          )}
+{!isLoginForm && (
+  <>
+    <div className="input-group">
+      <label className="input-label">First Name</label>
+      <input
+        type="text"
+        value={firstName}
+        className="login-input"
+        placeholder="John"
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+    </div>
+    <div className="input-group">
+      <label className="input-label">Last Name</label>
+      <input
+        type="text"
+        value={lastName}
+        className="login-input"
+        placeholder="Doe"
+        onChange={(e) => setLastName(e.target.value)}
+      />
+    </div>
 
+    {/* ── USER TYPE SELECTOR ── */}
+    <div className="input-group">
+      <label className="input-label">I am a...</label>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "8px",
+        marginTop: "4px",
+      }}>
+        {[
+          { value: "Developer", icon: "💻" },
+          { value: "Athlete",   icon: "⚡" },
+          { value: "Creator",   icon: "🎨" },
+          { value: "Celebrity", icon: "🌟" },
+          { value: "Other",     icon: "🚀" },
+        ].map((t) => (
+          <button
+            key={t.value}
+            type="button"
+            onClick={() => setUserType(t.value)}
+            style={{
+              padding: "9px 8px",
+              borderRadius: "10px",
+              border: userType === t.value
+                ? "1px solid rgba(139,92,246,0.7)"
+                : "1px solid rgba(139,92,246,0.15)",
+              background: userType === t.value
+                ? "rgba(124,58,237,0.2)"
+                : "rgba(255,255,255,0.04)",
+              color: userType === t.value ? "#c4b5fd" : "rgba(255,255,255,0.45)",
+              fontSize: "0.8rem",
+              fontFamily: "'DM Sans', sans-serif",
+              fontWeight: userType === t.value ? 600 : 400,
+              cursor: "pointer",
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+            }}
+          >
+            {t.icon} {t.value}
+          </button>
+        ))}
+      </div>
+    </div>
+  </>
+)}
           <div className="input-group">
             <label className="input-label">Email</label>
             <input

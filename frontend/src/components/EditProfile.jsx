@@ -5,24 +5,47 @@ import { BASE_URL } from "../utils/slices/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/slices/userSlice";
 
+const USER_TYPES = ["Developer", "Athlete", "Creator", "Celebrity", "Other"];
+const USER_TYPE_ICONS = {
+  Developer: "💻", Athlete: "⚡", Creator: "🎨", Celebrity: "🌟", Other: "🚀",
+};
+
 const EditProfile = ({ user }) => {
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
-  const [age, setAge] = useState(user.age || "");
-  const [gender, setGender] = useState(user.gender || "");
-  const [about, setAbout] = useState(user.about || "");
-  const [error, setError] = useState("");
-  const dispatch = useDispatch();
+  const [firstName, setFirstName]   = useState(user.firstName);
+  const [lastName, setLastName]     = useState(user.lastName);
+  const [photoUrl, setPhotoUrl]     = useState(user.photoUrl);
+  const [age, setAge]               = useState(user.age || "");
+  const [gender, setGender]         = useState(user.gender || "");
+  const [about, setAbout]           = useState(user.about || "");
+  const [userType, setUserType]     = useState(user.userType || "Developer");
+  const [skillsInput, setSkillsInput] = useState(
+    (user.skills || []).join(", ")
+  );
+  const [github, setGithub]     = useState(user.socialLinks?.github || "");
+  const [linkedin, setLinkedin] = useState(user.socialLinks?.linkedin || "");
+  const [twitter, setTwitter]   = useState(user.socialLinks?.twitter || "");
+  const [error, setError]       = useState("");
   const [showToast, setShowToast] = useState(false);
+  const dispatch = useDispatch();
 
   const saveProfile = async () => {
     setError("");
+    // Convert comma-separated skills string to array
+    const skillsArray = skillsInput
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     try {
       const token = localStorage.getItem("token");
       const res = await axios.patch(
         BASE_URL + "/profile/edit",
-        { firstName, lastName, photoUrl, age, gender, about },
+        {
+          firstName, lastName, photoUrl, age, gender, about,
+          userType,
+          skills: skillsArray,
+          socialLinks: { github, linkedin, twitter },
+        },
         {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
@@ -52,10 +75,10 @@ const EditProfile = ({ user }) => {
         }
 
         .edit-card {
-          width: 400px;
+          width: 420px;
           background: rgba(255,255,255,0.04);
           backdrop-filter: blur(20px);
-          border: 1px solid rgba(139, 92, 246, 0.2);
+          border: 1px solid rgba(139,92,246,0.2);
           border-radius: 24px;
           padding: 32px;
           box-shadow: 0 20px 60px rgba(0,0,0,0.4);
@@ -66,13 +89,20 @@ const EditProfile = ({ user }) => {
           font-size: 1.3rem;
           font-weight: 700;
           color: #fff;
-          margin: 0 0 24px;
+          margin: 0 0 8px;
           text-align: center;
         }
 
-        .edit-input-group {
-          margin-bottom: 14px;
+        .edit-section-label {
+          font-size: 0.68rem;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: rgba(167,139,250,0.5);
+          margin: 20px 0 10px;
+          display: block;
         }
+
+        .edit-input-group { margin-bottom: 12px; }
 
         .edit-label {
           display: block;
@@ -88,7 +118,7 @@ const EditProfile = ({ user }) => {
           width: 100%;
           padding: 10px 14px;
           background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(139, 92, 246, 0.2);
+          border: 1px solid rgba(139,92,246,0.2);
           border-radius: 10px;
           color: #fff;
           font-size: 0.88rem;
@@ -99,11 +129,68 @@ const EditProfile = ({ user }) => {
         }
 
         .edit-input:focus {
-          border-color: rgba(139, 92, 246, 0.55);
+          border-color: rgba(139,92,246,0.55);
           background: rgba(255,255,255,0.07);
         }
 
         .edit-input::placeholder { color: rgba(255,255,255,0.2); }
+
+        .edit-select {
+          width: 100%;
+          padding: 10px 14px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(139,92,246,0.2);
+          border-radius: 10px;
+          color: #fff;
+          font-size: 0.88rem;
+          font-family: 'DM Sans', sans-serif;
+          outline: none;
+          cursor: pointer;
+          box-sizing: border-box;
+        }
+
+        .edit-select option { background: #1a0d2e; color: #fff; }
+
+        .type-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+        }
+
+        .type-btn {
+          padding: 9px 6px;
+          border-radius: 10px;
+          border: 1px solid rgba(139,92,246,0.15);
+          background: rgba(255,255,255,0.03);
+          color: rgba(255,255,255,0.4);
+          font-size: 0.78rem;
+          font-family: 'DM Sans', sans-serif;
+          cursor: pointer;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+        }
+
+        .type-btn.active {
+          border-color: rgba(139,92,246,0.6);
+          background: rgba(124,58,237,0.18);
+          color: #c4b5fd;
+          font-weight: 600;
+        }
+
+        .type-btn:hover:not(.active) {
+          border-color: rgba(139,92,246,0.3);
+          background: rgba(255,255,255,0.05);
+          color: rgba(255,255,255,0.7);
+        }
+
+        .divider-line {
+          height: 1px;
+          background: rgba(139,92,246,0.1);
+          margin: 20px 0;
+        }
 
         .edit-error {
           color: #f87171;
@@ -118,7 +205,7 @@ const EditProfile = ({ user }) => {
 
         .save-btn {
           width: 100%;
-          padding: 12px;
+          padding: 13px;
           background: linear-gradient(135deg, #7c3aed, #2563eb);
           border: none;
           border-radius: 12px;
@@ -127,15 +214,15 @@ const EditProfile = ({ user }) => {
           font-weight: 600;
           font-family: 'DM Sans', sans-serif;
           cursor: pointer;
-          margin-top: 16px;
+          margin-top: 20px;
           transition: filter 0.2s, transform 0.15s, box-shadow 0.2s;
-          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+          box-shadow: 0 4px 20px rgba(124,58,237,0.3);
         }
 
         .save-btn:hover {
           filter: brightness(1.12);
           transform: translateY(-1px);
-          box-shadow: 0 8px 28px rgba(124, 58, 237, 0.45);
+          box-shadow: 0 8px 28px rgba(124,58,237,0.45);
         }
 
         .save-btn:active { transform: scale(0.98); }
@@ -155,7 +242,7 @@ const EditProfile = ({ user }) => {
           top: 24px;
           left: 50%;
           transform: translateX(-50%);
-          background: rgba(16, 185, 129, 0.15);
+          background: rgba(16,185,129,0.15);
           border: 1px solid rgba(16,185,129,0.3);
           backdrop-filter: blur(12px);
           color: #6ee7b7;
@@ -180,44 +267,112 @@ const EditProfile = ({ user }) => {
       )}
 
       <div className="edit-page">
-        {/* Form */}
+        {/* ── FORM ── */}
         <div className="edit-card">
           <h2 className="edit-title">Edit Profile</h2>
 
+          {/* Basic Info */}
+          <span className="edit-section-label">Basic Info</span>
+
           <div className="edit-input-group">
             <label className="edit-label">First Name</label>
-            <input type="text" value={firstName} className="edit-input" placeholder="John"
-              onChange={(e) => setFirstName(e.target.value)} />
+            <input type="text" value={firstName} className="edit-input"
+              placeholder="John" onChange={(e) => setFirstName(e.target.value)} />
           </div>
 
           <div className="edit-input-group">
             <label className="edit-label">Last Name</label>
-            <input type="text" value={lastName} className="edit-input" placeholder="Doe"
-              onChange={(e) => setLastName(e.target.value)} />
+            <input type="text" value={lastName} className="edit-input"
+              placeholder="Doe" onChange={(e) => setLastName(e.target.value)} />
           </div>
 
           <div className="edit-input-group">
             <label className="edit-label">Photo URL</label>
-            <input type="text" value={photoUrl} className="edit-input" placeholder="https://..."
-              onChange={(e) => setPhotoUrl(e.target.value)} />
+            <input type="text" value={photoUrl} className="edit-input"
+              placeholder="https://..." onChange={(e) => setPhotoUrl(e.target.value)} />
           </div>
 
-          <div className="edit-input-group">
-            <label className="edit-label">Age</label>
-            <input type="text" value={age} className="edit-input" placeholder="25"
-              onChange={(e) => setAge(e.target.value)} />
-          </div>
-
-          <div className="edit-input-group">
-            <label className="edit-label">Gender</label>
-            <input type="text" value={gender} className="edit-input" placeholder="male / female / other"
-              onChange={(e) => setGender(e.target.value)} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <div className="edit-input-group">
+              <label className="edit-label">Age</label>
+              <input type="number" value={age} className="edit-input"
+                placeholder="25" onChange={(e) => setAge(e.target.value)} />
+            </div>
+            <div className="edit-input-group">
+              <label className="edit-label">Gender</label>
+              <select value={gender} className="edit-select"
+                onChange={(e) => setGender(e.target.value)}>
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
           </div>
 
           <div className="edit-input-group">
             <label className="edit-label">About</label>
-            <input type="text" value={about} className="edit-input" placeholder="Tell us about yourself..."
+            <input type="text" value={about} className="edit-input"
+              placeholder="Tell us about yourself..."
               onChange={(e) => setAbout(e.target.value)} />
+          </div>
+
+          <div className="divider-line" />
+
+          {/* User Type */}
+          <span className="edit-section-label">I am a...</span>
+          <div className="type-grid">
+            {USER_TYPES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                className={`type-btn ${userType === t ? "active" : ""}`}
+                onClick={() => setUserType(t)}
+              >
+                {USER_TYPE_ICONS[t]} {t}
+              </button>
+            ))}
+          </div>
+
+          <div className="divider-line" />
+
+          {/* Skills */}
+          <span className="edit-section-label">Skills & Interests</span>
+          <div className="edit-input-group">
+            <label className="edit-label">Skills (comma separated)</label>
+            <input
+              type="text"
+              value={skillsInput}
+              className="edit-input"
+              placeholder="React, Node.js, MongoDB..."
+              onChange={(e) => setSkillsInput(e.target.value)}
+            />
+          </div>
+
+          <div className="divider-line" />
+
+          {/* Social Links */}
+          <span className="edit-section-label">Social Links</span>
+
+          <div className="edit-input-group">
+            <label className="edit-label">GitHub</label>
+            <input type="text" value={github} className="edit-input"
+              placeholder="https://github.com/username"
+              onChange={(e) => setGithub(e.target.value)} />
+          </div>
+
+          <div className="edit-input-group">
+            <label className="edit-label">LinkedIn</label>
+            <input type="text" value={linkedin} className="edit-input"
+              placeholder="https://linkedin.com/in/username"
+              onChange={(e) => setLinkedin(e.target.value)} />
+          </div>
+
+          <div className="edit-input-group">
+            <label className="edit-label">Twitter / X</label>
+            <input type="text" value={twitter} className="edit-input"
+              placeholder="https://twitter.com/username"
+              onChange={(e) => setTwitter(e.target.value)} />
           </div>
 
           {error && <p className="edit-error">{error}</p>}
@@ -227,10 +382,15 @@ const EditProfile = ({ user }) => {
           </button>
         </div>
 
-        {/* Preview */}
+        {/* ── PREVIEW ── */}
         <div>
           <p className="preview-label">Live Preview</p>
-         <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} isPreview={true} />
+          <UserCard
+            user={{ firstName, lastName, photoUrl, age, gender, about,
+                    userType, skills: skillsInput.split(",").map(s => s.trim()).filter(Boolean),
+                    socialLinks: { github, linkedin, twitter } }}
+            isPreview={true}
+          />
         </div>
       </div>
     </>

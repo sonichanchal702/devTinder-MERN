@@ -1,34 +1,46 @@
 const User = require("../model/User.model");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const { validateEditProfileData } = require("../utils/validations");
 
-
-
-const {validateEditProfileData}=require("../utils/validations");
-
-const profileView= async(req ,res)=>
-{ 
-   try{
-       const user=await User.findById(req.userId);
-       res.send(user);
-   }catch(err){
-      res.status(400).send("Erraor:" + err.message);
-   }
+const profileView = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
+  }
 };
 
-//Edit UserProfile  or Update
 const profileEdit = async (req, res) => {
   try {
     if (!validateEditProfileData(req)) {
       throw new Error("Invalid Edit Request!");
     }
+
     const loggedInUser = req.user;
 
-    Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
+    // Handle flat fields normally
+    const { socialLinks, ...flatFields } = req.body;
+
+    Object.keys(flatFields).forEach(
+      (key) => (loggedInUser[key] = flatFields[key])
+    );
+
+    // Handle socialLinks separately — deep merge so
+    // existing links aren't wiped if only one is updated
+    if (socialLinks) {
+      loggedInUser.socialLinks = {
+        ...((loggedInUser.socialLinks || {})),
+        ...socialLinks,
+      };
+      // Mark as modified so Mongoose saves the nested object
+      loggedInUser.markModified("socialLinks");
+    }
 
     await loggedInUser.save();
 
-    res.json({ // ← res.send ki jagah res.json use karo
+    res.json({
       message: `${loggedInUser.firstName} Profile Updated Successfully!`,
       data: loggedInUser,
     });
@@ -37,30 +49,23 @@ const profileEdit = async (req, res) => {
   }
 };
 
-// forgot password API - update pwd
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-
     const user = await User.findOne({ email });
     if (!user) throw new Error("User not found");
 
-    // Generate random token
     const resetToken = crypto.randomBytes(32).toString("hex");
-
-    // Hash token before saving
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
 
     user.resetPasswordToken = hashedToken;
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 mins
-
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
     await user.save();
 
     res.send(`Reset link: http://localhost:3000/reset/${resetToken}`);
-
   } catch (err) {
     res.status(400).send("Error: " + err.message);
   }
@@ -78,7 +83,7 @@ const resetPassword = async (req, res) => {
 
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
-      resetPasswordExpire: { $gt: Date.now() }
+      resetPasswordExpire: { $gt: Date.now() },
     });
 
     if (!user) throw new Error("Invalid or expired token");
@@ -86,16 +91,12 @@ const resetPassword = async (req, res) => {
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
-
     await user.save();
 
     res.send("Password reset successful!");
-
   } catch (err) {
     res.status(400).send("Error: " + err.message);
   }
 };
 
-module.exports={profileView, profileEdit, forgotPassword, resetPassword};
-
-
+module.exports = { profileView, profileEdit, forgotPassword, resetPassword };
