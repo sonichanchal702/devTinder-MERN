@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/slices/constants";
+import { addFeed } from "../utils/slices/feedSlice";
 
 
 const Login = () => {
@@ -29,6 +30,7 @@ const Login = () => {
     );
     localStorage.setItem("token", res.data.token);
     dispatch(addUser(res.data));
+    dispatch(addFeed(null));
     navigate("/feed");
   } catch (err) {
     setError(err?.response?.data?.message || "Something went wrong");
@@ -43,6 +45,7 @@ const handleSignUp = async () => {
       { withCredentials: true }
     );
     dispatch(addUser(res.data.data));
+    dispatch(addFeed(null)); 
     return navigate("/profile");
   } catch (err) {
     setError(err?.response?.data?.message || "Something went wrong");

@@ -84,3 +84,29 @@ Payment gateway integrate kiya tha Razorpay se, mock mode mein hai — productio
 - Logout now uses `finally` block — always clears Redux + localStorage
 - Feed dispatch cleared on logout via `addFeed(null)`
 - Added `framer-motion` for landing page animations
+
+
+
+# 24/06/2026
+## v2.1 — June 2026
+
+### 🃏 UserCard 2.0
+- Swipe animation — card flies left (Nope) or right (Vibe ✓) with Framer Motion
+- UserType badge on card — color coded per type
+- Skill tags displayed on card (max 5 + overflow count)
+- Social links (GitHub, LinkedIn, Twitter) visible on card
+
+### 👤 Multi-audience Support
+- User types: Developer / Athlete / Creator / Celebrity / Other
+- Selectable on signup + editable in profile
+- Each type has unique icon + color on feed cards
+
+### ⚙️ Profile Edit Upgrade
+- Skills field (comma separated → saved as array)
+- Social links section (GitHub, LinkedIn, Twitter)
+- UserType selector grid in edit profile
+
+### 🔧 Backend Fixes
+- socialLinks deep merge with markModified
+- Feed API now returns userType + socialLinks
+- Validation whitelist updated

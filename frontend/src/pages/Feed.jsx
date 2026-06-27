@@ -11,7 +11,7 @@ const Feed = () => {
   const dispatch = useDispatch();
 
   const getFeed = async () => {
-    if (feed) return;
+    
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(BASE_URL + "/feed", {
@@ -43,7 +43,7 @@ const Feed = () => {
     );
   }
 
-  // Filter out own profile as safety net (backend already does this,
+  // Filter out own profile as safety net
   // but this prevents edge cases where own card slips through)
   const filteredFeed = feed.filter(
     (u) => u._id?.toString() !== currentUser?._id?.toString()

@@ -10,8 +10,7 @@ const NavBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-const handleLogout = async () => {
+  const handleLogout = async () => {
   try {
     const token = localStorage.getItem("token");
     await axios.post(
@@ -22,13 +21,14 @@ const handleLogout = async () => {
   } catch (err) {
     console.error(err);
   } finally {
-    // Always clear everything regardless of API success
     dispatch(removeUser());
-    dispatch(addFeed(null));        // ← clears feed on logout
+    dispatch(addFeed(null));          // ← clears feed
     localStorage.removeItem("token");
     navigate("/");
   }
 };
+
+
 
   return (
     <div className="navbar bg-base-300 px-4 sticky top-0 z-50">
