@@ -1,6 +1,27 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @plugin "daisyui";
 
+/* Global overflow fix */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Override DaisyUI base colors to match dark theme */
+:root {
+  --color-base-100: #060412;
+  --color-base-200: #0d0920;
+  --color-base-300: #130e2a;
+  --color-base-content: #ffffff;
+}

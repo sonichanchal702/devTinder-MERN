@@ -1,18 +1,22 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/slices/socket";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/slices/constants";
+import EmojiPicker from "emoji-picker-react";
+import { useState as useEmojiState } from "react";
 
 const Chat = () => {
   const { targetUserId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const user = useSelector((store) => store.user);
   const userId = user?._id;
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -335,22 +339,76 @@ const Chat = () => {
         </div>
 
         {/* Input */}
-        <div className="chat-input-area">
-          <input
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="chat-input"
-            placeholder="Type a message..."
-          />
-          <button
-            onClick={sendMessage}
-            className="send-btn"
-            disabled={!newMessage.trim()}
-          >
-            ➤
-          </button>
-        </div>
+        // TO:
+<div style={{ position: "relative" }}>
+  {/* Emoji Picker */}
+  {showEmojiPicker && (
+    <div style={{
+      position: "absolute",
+      bottom: "70px",
+      left: "16px",
+      zIndex: 1000,
+    }}>
+      <EmojiPicker
+        theme="dark"
+        onEmojiClick={(emojiData) => {
+          setNewMessage((prev) => prev + emojiData.emoji);
+          setShowEmojiPicker(false);
+        }}
+        height={380}
+        width={300}
+        searchDisabled={false}
+        skinTonesDisabled={true}
+        previewConfig={{ showPreview: false }}
+      />
+    </div>
+  )}
+
+  <div className="chat-input-area">
+    {/* Emoji toggle button */}
+    <button
+      onClick={() => setShowEmojiPicker((prev) => !prev)}
+      style={{
+        width: "40px",
+        height: "40px",
+        borderRadius: "12px",
+        background: showEmojiPicker
+          ? "rgba(124,58,237,0.25)"
+          : "rgba(255,255,255,0.05)",
+        border: "1px solid rgba(139,92,246,0.2)",
+        color: "#a78bfa",
+        fontSize: "1.2rem",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        transition: "background 0.2s",
+      }}
+      title="Emoji"
+    >
+      😊
+    </button>
+
+    <input
+      value={newMessage}
+      onChange={(e) => setNewMessage(e.target.value)}
+      onKeyPress={handleKeyPress}
+      className="chat-input"
+      placeholder="Type a message..."
+      // Close picker when typing
+      onFocus={() => setShowEmojiPicker(false)}
+    />
+
+    <button
+      onClick={sendMessage}
+      className="send-btn"
+      disabled={!newMessage.trim()}
+    >
+      ➤
+    </button>
+  </div>
+</div>
       </div>
     </>
   );
