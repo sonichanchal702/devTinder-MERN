@@ -110,3 +110,26 @@ Payment gateway integrate kiya tha Razorpay se, mock mode mein hai — productio
 - socialLinks deep merge with markModified
 - Feed API now returns userType + socialLinks
 - Validation whitelist updated
+
+## v2.2 — June 2026
+
+### 💬 Emoji Picker in Chat
+- emoji-picker-react integrated with dark theme
+- Click 😊 to open, click emoji to insert, auto-closes after selection
+
+### 🧭 NavBar & Footer Overhaul  
+- Full-width sticky glassmorphism navbar
+- Custom dropdown replacing DaisyUI dropdown
+- Removed broken "New" badge
+- Minimal dark footer with Privacy/Terms/Contact
+
+### 🎯 Feed Empty State Upgrade
+- Floating animated icon
+- Gradient headline with personality
+- Mini stat cards showing next steps
+- Profile completion tip nudge
+
+### 🎨 Global Theme Fix
+- Deep #060412 background consistent across all routes
+- DaisyUI base color overrides in index.css
+- Horizontal scroll eliminated globally
