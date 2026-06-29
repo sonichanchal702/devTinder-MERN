@@ -1,11 +1,13 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const connectDB=async()=>{
-   try{
-   await mongoose.connect("mongodb://127.0.0.1:27017/devtinder");
-         console.log("db connected successfullyy");
-   }catch(error){
-      console.log("db not connected!",error.message());
-   }
-}
-module.exports=connectDB;
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("DB connected successfully");
+  } catch (error) {
+    console.log("DB not connected!", error.message);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
