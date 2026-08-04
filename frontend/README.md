@@ -133,3 +133,7 @@ Payment gateway integrate kiya tha Razorpay se, mock mode mein hai — productio
 - Deep #060412 background consistent across all routes
 - DaisyUI base color overrides in index.css
 - Horizontal scroll eliminated globally
+
+# URL - LIVE
+- frontend : https://vibe-app-xyz.vercel.app/    || https://vercel.com/sonichanchal702s-projects/vibe-app-xyz/FsSi1puYZDdVKjdb8oYQaUaCDUs9
+- backend : https://vibe-app-dzwr.onrender.com   || https://dashboard.render.com/web/srv-d913998g4nts73c5c600/events
