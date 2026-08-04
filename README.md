@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshorts/feed.png" alt="Vibe Banner" width="100%" style="border-radius:12px"/>
+<img src="https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshots/feed.png" alt="Vibe Banner" width="100%" style="border-radius:12px"/>
 
 <br/><br/>
 
@@ -47,11 +47,11 @@ Built solo from scratch: database schema → REST API → Redux state → WebSoc
 
 | Feed | Profile |
 |---|---|
-| ![Feed](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshorts/feed.png) | ![Profile](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshorts/profile.png) |
+| ![Feed](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshots/feed.png) | ![Profile](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshots/profile.png) |
 
 | Real-time Chat | Connection Requests | Premium |
 |---|---|---|
-| ![Chat](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshorts/chat.png) | ![Requests](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshorts/connectionRequest.png) | ![Premium](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshorts/primium.png) |
+| ![Chat](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshots/chat.png) | ![Requests](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshots/connectionRequest.png) | ![Premium](https://raw.githubusercontent.com/sonichanchal702/Vibe_Hustlers_Networking_Platform/main/frontend/public/screenshots/primium.png) |
 
 ---
 
